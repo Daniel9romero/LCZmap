@@ -30,10 +30,10 @@ const CONFIG = {
 
   // Posición del chat
   bubblePosition: 'bottom-6 left-6',
-  windowPosition: 'bottom-24 left-6',
+  windowPosition: 'bottom-6 left-6',
 
   // Tamaños
-  bubbleSize: 'w-16 h-16',
+  bubbleSize: 'w-20 h-20',
   windowSize: 'w-[380px] h-[500px]',
 
   // Tiempo para mostrar notificación (ms)
@@ -126,9 +126,16 @@ export default function ChatBubble() {
 
       if (contentType?.includes('application/json')) {
         const data = await response.json();
-        botText = data.response || data.output || data.message || data;
+        // Asegurar que siempre sea string
+        const rawText = data.response || data.output || data.message || data;
+        botText = typeof rawText === 'string' ? rawText : JSON.stringify(rawText);
       } else {
         botText = await response.text();
+      }
+
+      // Asegurar que no sea un objeto
+      if (typeof botText !== 'string') {
+        botText = String(botText);
       }
 
       const botMessage: Message = {
@@ -246,18 +253,16 @@ export default function ChatBubble() {
 
             {/* Messages */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
-              {/* Welcome message */}
-              {messages.length === 0 && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="flex justify-start"
-                >
-                  <div className="max-w-[85%] bg-white/10 text-gray-200 rounded-2xl rounded-bl-sm px-4 py-3">
-                    <p className="text-sm leading-relaxed">{CONFIG.welcomeMessage}</p>
-                  </div>
-                </motion.div>
-              )}
+              {/* Welcome message - siempre visible */}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex justify-start"
+              >
+                <div className="max-w-[85%] bg-white/10 text-gray-200 rounded-2xl rounded-bl-sm px-4 py-3">
+                  <p className="text-sm leading-relaxed">{CONFIG.welcomeMessage}</p>
+                </div>
+              </motion.div>
 
               {messages.map((message) => (
                 <motion.div
@@ -301,7 +306,7 @@ export default function ChatBubble() {
             </div>
 
             {/* Input */}
-            <div className="p-4 border-t border-white/10 bg-black/50">
+            <div className="px-3 pb-2 pt-2 border-t border-white/10 bg-black/50">
               <div className="flex items-center gap-2">
                 <input
                   ref={inputRef}
@@ -311,12 +316,12 @@ export default function ChatBubble() {
                   onKeyPress={handleKeyPress}
                   placeholder={CONFIG.inputPlaceholder}
                   disabled={isLoading}
-                  className={`flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-${CONFIG.accentColor}/50 focus:ring-1 focus:ring-${CONFIG.accentColor}/30 transition-all disabled:opacity-50`}
+                  className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/30 transition-all disabled:opacity-50"
                 />
                 <button
                   onClick={sendMessage}
                   disabled={!inputValue.trim() || isLoading}
-                  className={`p-3 bg-${CONFIG.accentColor} rounded-xl text-black hover:bg-${CONFIG.accentColor}/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed`}
+                  className="p-2.5 bg-blue-600 rounded-xl text-white hover:bg-blue-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Send size={18} />
                 </button>
@@ -325,9 +330,9 @@ export default function ChatBubble() {
                 href={CONFIG.portfolioUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 mt-3 py-2 px-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-gray-300 hover:text-white text-xs transition-all"
+                className="flex items-center justify-center gap-2 mt-2 py-1.5 px-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-gray-300 hover:text-white text-xs transition-all"
               >
-                <ExternalLink size={14} />
+                <ExternalLink size={12} />
                 Contacto
               </a>
             </div>
