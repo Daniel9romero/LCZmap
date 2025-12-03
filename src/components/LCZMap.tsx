@@ -10,6 +10,7 @@ import {
   TreePine, Building2,
   Loader2, FlaskConical, BarChart3, Database, Cpu, X, Award
 } from 'lucide-react';
+import ChatBubble from './ChatBubble';
 
 // Congreso CIMA 2025 photos
 const congresoPhotos = [
@@ -468,7 +469,9 @@ export function LCZMap() {
             if (value === 0 || value === null || value === undefined) {
               return 'rgba(0,0,0,0)';
             }
-            const lcz = lczTypes.find(t => t.id === Math.round(value) || t.id === String.fromCharCode(64 + Math.round(value) - 9));
+            // Valores 1-9: LCZ urbanos (1-9)
+            // Valores 11-17: LCZ naturales (A-G)
+            const lcz = lczTypes.find(t => t.id === Math.round(value) || t.id === String.fromCharCode(64 + Math.round(value) - 10));
             if (lcz) return lcz.color;
             return '#999999';
           };
@@ -540,11 +543,22 @@ export function LCZMap() {
           animate={{ opacity: 1, y: 0 }}
         >
           {/* Header */}
-          <div className="text-center mb-8">
+          <div className="text-center mb-8 relative">
+            <a
+              href="https://daniel9romero.github.io/Portafolio/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="absolute top-0 right-0 px-3 py-1.5 bg-gray-800/80 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg text-xs font-medium transition-all border border-gray-700"
+            >
+              Contacto
+            </a>
             <Badge variant="outline" className="mb-4">Proyecto de Investigación</Badge>
-            <h1 className="text-4xl font-bold mb-4">
+            <h1 className="text-4xl font-bold mb-2">
               Clasificación LCZ de la Ciudad de México
             </h1>
+            <p className="text-lg text-gray-700 dark:text-gray-300 mb-2">
+              José Daniel López Romero
+            </p>
             <p className="text-xl text-gray-600 dark:text-gray-400 mb-2">
               Local Climate Zones - Zonas Climáticas Locales
             </p>
@@ -640,7 +654,7 @@ export function LCZMap() {
                         value={[lczOpacity]}
                         onValueChange={(v: number[]) => setLczOpacity(v[0])}
                         max={100}
-                        min={20}
+                        min={0}
                         step={5}
                         className="w-24"
                       />
@@ -1064,6 +1078,10 @@ export function LCZMap() {
           </footer>
         </motion.div>
       </div>
+
+      {/* Chat Bubble */}
+      <ChatBubble />
+
     </div>
   );
 }
