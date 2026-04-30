@@ -6,8 +6,12 @@ import { Send, X, Loader2, ExternalLink } from 'lucide-react';
 // CONFIGURACIÓN - MODIFICA ESTOS VALORES
 // ============================================
 const CONFIG = {
-  // Webhook de n8n
-  webhookUrl: 'https://daniel9romero.app.n8n.cloud/webhook/0150c20a-915c-4ab8-bc99-716be8e97bae',
+  // Endpoint del chatbot (Vercel + Gemini)
+  // En produccion: https://lczmap-chatbot-api.vercel.app/api/chat
+  // En local con `vercel dev`: http://localhost:3000/api/chat
+  webhookUrl:
+    (import.meta.env.VITE_CHAT_API_URL as string | undefined) ||
+    'https://lczmap-chatbot-api.vercel.app/api/chat',
 
   // Información del asistente
   assistantName: 'José Daniel López Romero',
